@@ -2,6 +2,7 @@ const { Router } = require("express");
 const router = Router();
 
 // Controllers
+const app = require("../controllers/app");
 const auth = require("../controllers/auth");
 const survey = require("../controllers/survey");
 const administrador = require("../controllers/admin");
@@ -27,5 +28,8 @@ router.get(
   isAdmin,
   administrador.surveyAirport
 );
+
+// 404
+router.get("*", app.notFound);
 
 module.exports = router;
