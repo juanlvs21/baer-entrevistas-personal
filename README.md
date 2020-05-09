@@ -12,7 +12,7 @@ Aplicación para la realización en entrevistas al personal de servicio
   2. Instalar dependencias necesarias:
      - `npm install` <small>(Si usa <a href="https://www.npmjs.com/">Npm</a> como gestor de paquetes)</small>
      - `yarn install` <small>(Si usa <a href="https://yarnpkg.com/">Yarn</a> como gestor de paquetes)</small>
-  3. Preparar archivo de variables de entorno: _En este punto deberá dublicar el archivo_ **"_.example.env_"** _y deberá llamar a este nuevo archivo_ **"_.env_"**. Este archivo contiene las siguientes variables:
+  3. Preparar archivo de variables de entorno: _En este punto deberá duplicar el archivo_ **"_.example.env_"** _y deberá llamar a este nuevo archivo_ **"_.env_"**. Este archivo contiene las siguientes variables:
      - **DATABASE_URI**: Uri de su base de datos _MongoDB_ <small>(Ejemplo: mongodb://localhost:27017/nombre_db)</small>
      - **SESSION_KEY**: Llave secreta para el manejo de sesiones <small>(Se recomienda el uso de <a href="https://keygen.io/">KeyGen.io</a> para la generación de hashes)</small>
   4. Cargar datos relacionados al personal:
