@@ -1,0 +1,73 @@
+<%- layout("layouts/main.ejs") %>
+<div class="card baer__survey-card">
+  <div class="has-text-centered" style="padding-top: 10px;">
+    <img src="/static/images/banner.png" alt="BAER Banner" height="70" />
+  </div>
+  <header class="baer__card-header">
+    <h1>ENTREVISTA PERSONAL DE SERVICIO</h1>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      <div class="baer__user-info">
+        <p><b>Fecha:</b> <%= survey.date %></p>
+        <p>
+          <b>Nombre y Apellido:</b> <%= survey.firstName_user %> <%=
+          survey.lastName_user %>
+        </p>
+        <p><b>Número de Cédula:</b> <%= survey.ci_user %></p>
+        <p><b>Aeropuerto:</b> <%= survey.airport %></p>
+      </div>
+      <div style="margin-top: 30px;">
+        <div>
+          <h5>
+            ¿Qué medio de transporte utiliza para transladarse de su casa al
+            trabajo y viceversa?
+          </h5>
+          <pre class="baer__pre">
+            <%= survey.howIsItTransported %>
+          </pre>
+        </div>
+        <div>
+          <h5>
+            Indique si el comedor está funcionando, ¿Cuál es su opinión sobre el
+            servicio prestado?
+          </h5>
+          <pre class="baer__pre">
+            <%= survey.dinningRoom %>
+          </pre>
+        </div>
+        <div>
+          <h5>
+            ¿Usted está recibiendo los beneficios que ofrece BAER?
+          </h5>
+          <p style="margin-bottom: 5px;">
+            <b>Bolsa de comida: </b>
+            <%= survey.benefits.foodBag ? 'Si' : 'No' %>
+
+            <!-- Frequency -->
+            <% if (survey.benefits.foodBag) { %>
+            <span>- <%= survey.benefits.foodBagFrequency %></span>
+            <% } %>
+          </p>
+          <p style="margin-bottom: 5px;">
+            <b>Bonificaciones: </b>
+            <%= survey.benefits.bonuses ? 'Si' : 'No' %>
+          </p>
+          <p style="margin-bottom: 5px;">
+            <b>Transporte: </b>
+            <%= survey.benefits.transport ? 'Si' : 'No' %>
+          </p>
+        </div>
+        <div style="margin-top: 20px;">
+          <h5>
+            ¿Cómo se siente laboralmente? Haga un breve comentario, algo que
+            quiera manifestar
+          </h5>
+          <pre class="baer__pre">
+            <%= survey.howDoesItFeel %>
+          </pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

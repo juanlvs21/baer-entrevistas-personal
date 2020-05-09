@@ -1,0 +1,158 @@
+<%- layout("layouts/main.ejs") %>
+<div class="card baer__survey-card">
+  <div class="has-text-centered" style="padding-top: 10px;">
+    <img src="/static/images/banner.png" alt="BAER Banner" height="70" />
+  </div>
+  <header class="baer__card-header">
+    <h1><%= airport %></h1>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      <div class="baer__table-container">
+        <table class="table is-hoverable" id="table-surveys">
+          <thead>
+            <tr>
+              <th>CI</th>
+              <th>Nombre y Apellido</th>
+              <th>Fecha de Realizacion</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% surveys.forEach(function(survey) { %>
+            <tr>
+              <td><%= survey.ci_user %></td>
+              <td>
+                <%= survey.firstName_user %> <%= survey.lastName_user %>
+              </td>
+              <td><%= moment(survey.date).format("DD/MM/YYYY hh:ss") %></td>
+              <td>
+                <button
+                  class="button is-small is-info is-outlined"
+                  onclick="downloadPDF('<%= JSON.stringify(survey) %>')"
+                >
+                  Descargar
+                </button>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+      <div class="has-text-centered">
+        <button
+          class="button is-info"
+          onclick="downloadAllPDF('<%= JSON.stringify(surveys) %>')"
+        >
+          Descargar Todo
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (() => {
+    const tableSurveys = document.querySelector("#table-surveys");
+    const dataTable = new DataTable(tableSurveys);
+  })();
+
+  const generatePDF = (doc, survey, callback) => {
+    const bannerBase64 = "<%= bannerBase64 %>";
+    const logoBase64 = "<%= logoBase64 %>";
+
+    // Banner - Logo
+    doc.addImage(bannerBase64, "PNG", 40, 30, 500, 40);
+    doc.addImage(logoBase64, "PNG", 370, 30, 85, 35);
+
+    doc.setFontSize(12);
+    doc.setFontType("bold");
+    doc.text("ENTREVISTA PERSONAL DE SERVICIO", 190, 110);
+
+    doc.setFontType("normal");
+    doc.text(
+      `Nombre y Apellido: ${survey.firstName_user} ${survey.lastName_user}`,
+      30,
+      145
+    );
+    doc.text(`Número de Cédula: ${survey.ci_user}`, 30, 165);
+    doc.text(`Aeropuerto: ${survey.airport}`, 30, 185);
+
+    doc.text(
+      "¿Qué medio de transporte utiliza para transladarse de su casa al trabajo y viceversa?",
+      30,
+      220
+    );
+    doc.autoTable({
+      startY: 220,
+      theme: "plain",
+      body: [[survey.howIsItTransported]],
+    });
+
+    doc.text(
+      "Indique si el comedor está funcionando, ¿Cuál es su opinión sobre el servicio prestado?",
+      30,
+      doc.lastAutoTable.finalY + 20
+    );
+    doc.autoTable({
+      startY: doc.lastAutoTable.finalY + 20,
+      theme: "plain",
+      body: [[survey.dinningRoom]],
+    });
+
+    doc.text(
+      "¿Usted está recibiendo los beneficios que ofrece BAER?",
+      30,
+      doc.lastAutoTable.finalY + 20
+    );
+    doc.autoTable({
+      startY: doc.lastAutoTable.finalY + 20,
+      theme: "plain",
+      body: [
+        [
+          `Bolsa de comida: ${survey.benefits.foodBag ? "Si" : "No"} ${
+            survey.benefits.foodBag
+              ? ` - ${survey.benefits.foodBagFrequency}`
+              : ""
+          }`,
+        ],
+        [`Bonificaciones: ${survey.benefits.bonuses ? "Si" : "No"}`],
+        [`Transporte: ${survey.benefits.transport ? "Si" : "No"}`],
+      ],
+    });
+
+    doc.text(
+      "¿Cómo se siente laboralmente? Haga un breve comentario, algo que quiera manifestar",
+      30,
+      doc.lastAutoTable.finalY + 20
+    );
+    doc.autoTable({
+      startY: doc.lastAutoTable.finalY + 20,
+      theme: "plain",
+      body: [[survey.howDoesItFeel]],
+    });
+
+    callback(doc, `${survey.ci_user}.pdf`);
+    // doc.save(`${survey.ci_user}.pdf`);
+  };
+
+  const downloadPDF = (surveyString) => {
+    const doc = new jsPDF("p", "pt", "a4");
+    const survey = JSON.parse(surveyString);
+    generatePDF(doc, survey, (doc, name) => doc.save(name));
+  };
+
+  const downloadAllPDF = (surveysString) => {
+    const doc = new jsPDF("p", "pt", "a4");
+    const airport = "<%= airport %>";
+    const surveys = JSON.parse(surveysString);
+
+    surveys.map((survey, i) => {
+      generatePDF(doc, survey, (doc, name) => {
+        if (i < surveys.length - 1) doc.addPage();
+      });
+    });
+
+    doc.save(`${airport}.pdf`);
+  };
+</script>

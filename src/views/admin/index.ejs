@@ -1,0 +1,140 @@
+<%- layout("layouts/main.ejs") %>
+<div class="card baer__survey-card">
+  <div class="has-text-centered" style="padding-top: 10px;">
+    <img src="/static/images/banner.png" alt="BAER Banner" height="70" />
+  </div>
+  <header class="baer__card-header">
+    <h1>ADMINISTRAR ENTREVISTAS</h1>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      <div class="table-container">
+        <table class="table is-hoverable">
+          <thead>
+            <tr>
+              <th>Aeropuerto</th>
+              <th>Entrevistas Realizadas</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% airports.forEach(function(airport) { %>
+            <tr>
+              <td>
+                <a href="/administrar/<%= airport._id %>">
+                  <%= airport.name %>
+                </a>
+              </td>
+              <td class="has-text-centered"><%= airport.numberSurveys %></td>
+            </tr>
+            <% }); %>
+            <tr>
+              <td></td>
+              <td class="has-text-centered">Total: <%= totalSurveys %></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="has-text-centered">
+        <button
+          class="button is-info"
+          onclick="downloadAllGlobalPDF('<%= JSON.stringify(surveys) %>')"
+        >
+          Descargar todas las entrevistas
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const generatePDF = (doc, survey, callback) => {
+    const bannerBase64 = "<%= bannerBase64 %>";
+    const logoBase64 = "<%= logoBase64 %>";
+
+    // Banner - Logo
+    doc.addImage(bannerBase64, "PNG", 40, 30, 500, 40);
+    doc.addImage(logoBase64, "PNG", 370, 30, 85, 35);
+
+    doc.setFontSize(12);
+    doc.setFontType("bold");
+    doc.text("ENTREVISTA PERSONAL DE SERVICIO", 190, 110);
+
+    doc.setFontType("normal");
+    doc.text(
+      `Nombre y Apellido: ${survey.firstName_user} ${survey.lastName_user}`,
+      30,
+      145
+    );
+    doc.text(`Número de Cédula: ${survey.ci_user}`, 30, 165);
+    doc.text(`Aeropuerto: ${survey.airport}`, 30, 185);
+
+    doc.text(
+      "¿Qué medio de transporte utiliza para transladarse de su casa al trabajo y viceversa?",
+      30,
+      220
+    );
+    doc.autoTable({
+      startY: 220,
+      theme: "plain",
+      body: [[survey.howIsItTransported]],
+    });
+
+    doc.text(
+      "Indique si el comedor está funcionando, ¿Cuál es su opinión sobre el servicio prestado?",
+      30,
+      doc.lastAutoTable.finalY + 20
+    );
+    doc.autoTable({
+      startY: doc.lastAutoTable.finalY + 20,
+      theme: "plain",
+      body: [[survey.dinningRoom]],
+    });
+
+    doc.text(
+      "¿Usted está recibiendo los beneficios que ofrece BAER?",
+      30,
+      doc.lastAutoTable.finalY + 20
+    );
+    doc.autoTable({
+      startY: doc.lastAutoTable.finalY + 20,
+      theme: "plain",
+      body: [
+        [
+          `Bolsa de comida: ${survey.benefits.foodBag ? "Si" : "No"} ${
+            survey.benefits.foodBag
+              ? ` - ${survey.benefits.foodBagFrequency}`
+              : ""
+          }`,
+        ],
+        [`Bonificaciones: ${survey.benefits.bonuses ? "Si" : "No"}`],
+        [`Transporte: ${survey.benefits.transport ? "Si" : "No"}`],
+      ],
+    });
+
+    doc.text(
+      "¿Cómo se siente laboralmente? Haga un breve comentario, algo que quiera manifestar",
+      30,
+      doc.lastAutoTable.finalY + 20
+    );
+    doc.autoTable({
+      startY: doc.lastAutoTable.finalY + 20,
+      theme: "plain",
+      body: [[survey.howDoesItFeel]],
+    });
+
+    callback(doc, `${survey.ci_user}.pdf`);
+    // doc.save(`${survey.ci_user}.pdf`);
+  };
+  const downloadAllGlobalPDF = (surveysString) => {
+    const doc = new jsPDF("p", "pt", "a4");
+    const surveys = JSON.parse(surveysString);
+
+    surveys.map((survey, i) => {
+      generatePDF(doc, survey, (doc, name) => {
+        if (i < surveys.length - 1) doc.addPage();
+      });
+    });
+
+    doc.save(`BAER - ENTREVISTAS PERSONAL DE SERVICIO.pdf`);
+  };
+</script>

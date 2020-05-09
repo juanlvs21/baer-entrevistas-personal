@@ -1,0 +1,144 @@
+<%- layout("layouts/main.ejs") %>
+<div class="card baer__survey-card">
+  <div class="has-text-centered" style="padding-top: 10px;">
+    <img src="/static/images/banner.png" alt="BAER Banner" height="70" />
+  </div>
+  <header class="baer__card-header">
+    <h1>ENTREVISTA PERSONAL DE SERVICIO</h1>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      <div class="baer__user-info">
+        <p>
+          <b>Nombre y Apellido:</b> <%= user.firstName %> <%= user.lastName %>
+        </p>
+        <p><b>Número de Cédula:</b> <%= user.ci %></p>
+        <p><b>Aeropuerto:</b> <%= user.airport %></p>
+      </div>
+      <div class="baer__form-container">
+        <form action="/encuesta/crear" method="POST">
+          <div class="field">
+            <label class="label">
+              ¿Qué medio de transporte utiliza para transladarse de su casa al
+              trabajo y viceversa?
+            </label>
+            <div class="control">
+              <textarea
+                class="textarea"
+                name="howIsItTransported"
+                placeholder="Respuesta"
+                rows="2"
+                required
+              ></textarea>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">
+              Indique si el comedor está funcionando, ¿Cuál es su opinión sobre
+              el servicio prestado?
+            </label>
+            <div class="control">
+              <textarea
+                class="textarea"
+                name="dinningRoom"
+                placeholder="Respuesta"
+                rows="2"
+                required
+              ></textarea>
+            </div>
+          </div>
+          <label class="label">
+            ¿Usted está recibiendo los beneficios que ofrece BAER?
+          </label>
+          <div style="margin-bottom: 10px;">
+            <div class="control baer__form-food-bag">
+              <span>Bolsa de comida</span>
+              <label class="radio">
+                <input
+                  type="radio"
+                  name="foodBag"
+                  value="true"
+                  checked
+                  required
+                />
+                Si
+              </label>
+              <label class="radio">
+                <input type="radio" name="foodBag" value="false" required />
+                No
+              </label>
+              <label class="radio">
+                <input
+                  class="input is-small"
+                  name="foodBagFrequency"
+                  type="text"
+                  placeholder="¿Con qué frecuencia lo recibe?"
+                />
+              </label>
+            </div>
+            <div class="control">
+              <span>Bonificaciones</span>
+              <label class="radio">
+                <input
+                  type="radio"
+                  name="bonuses"
+                  value="true"
+                  checked
+                  required
+                />
+                Si
+              </label>
+              <label class="radio">
+                <input type="radio" name="bonuses" value="false" required />
+                No
+              </label>
+            </div>
+            <div class="control" style="margin-top: 3px;">
+              <span>Transporte</span>
+              <label class="radio">
+                <input
+                  type="radio"
+                  name="transport"
+                  value="true"
+                  checked
+                  required
+                />
+                Si
+              </label>
+              <label class="radio">
+                <input type="radio" name="transport" value="false" required />
+                No
+              </label>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">
+              ¿Cómo se siente laboralmente? Haga un breve comentario, algo que
+              quiera manifestar
+            </label>
+            <div class="control">
+              <textarea
+                class="textarea"
+                name="howDoesItFeel"
+                placeholder="Respuesta"
+                rows="2"
+                required
+              ></textarea>
+            </div>
+          </div>
+
+          <% if (surveyErrorMessage && surveyErrorMessage != "") { %>
+          <div class="notification is-danger">
+            <p><b><%= surveyErrorMessage %></b></p>
+          </div>
+          <% } %>
+          <div class="has-text-centered">
+            <button class="button is-info" type="submit">
+              Enviar Entrevista
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

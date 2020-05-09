@@ -1,0 +1,48 @@
+<%- layout("layouts/auth.ejs") %>
+<div class="columns">
+  <div class="column is-5" style="margin: auto;">
+    <div class="card" style="margin: auto;">
+      <div class="card-content">
+        <div class="title has-text-centered">
+          <img src="/static/images/baer-logo.png" width="200" alt="BAER" />
+        </div>
+        <div>
+          <form action="/auth/iniciar" method="POST">
+            <div class="field">
+              <label class="label">Cédula de Identidad</label>
+              <div class="control">
+                <input
+                  class="input"
+                  name="ci"
+                  type="text"
+                  placeholder="Cédula de Identidad"
+                />
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Contraseña</label>
+              <div class="control">
+                <input
+                  class="input"
+                  name="password"
+                  type="password"
+                  placeholder="Contraseña"
+                />
+              </div>
+            </div>
+            <% if (signinMessage && signinMessage != "") { %>
+            <div class="notification is-danger">
+              <p><b><%= signinMessage %></b></p>
+            </div>
+            <% } %>
+            <div class="has-text-centered" style="padding-top: 10px;">
+              <button class="button is-info" type="submit">
+                Iniciar Sesión
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
