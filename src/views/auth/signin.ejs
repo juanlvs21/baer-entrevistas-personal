@@ -15,7 +15,8 @@
                   class="input"
                   name="ci"
                   type="text"
-                  placeholder="Cédula de Identidad"
+                  onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                  placeholder="Ejemplo 12123123"
                 />
               </div>
             </div>
