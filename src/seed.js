@@ -11,11 +11,8 @@ const xlsx = require("node-xlsx");
 const obj = xlsx.parse(__dirname + "/assets/files/personal.xlsx");
 const data = obj[0].data;
 
-const objSede = xlsx.parse(__dirname + "/assets/files/sede.xlsx");
-const dataSede = objSede[0].data;
-
 function saveUsers() {
-  dataSede.map(async (employee) => {
+  data.map(async (employee) => {
     let password = "";
     // A default password is chosen according to the airport
     if (employee[0] == "AEROPUERTO ALBERTO CARNEVALLI - MERIDA")
@@ -119,46 +116,46 @@ async function saveAdmin() {
 
 async function saveAirports() {
   const airports = [
-    // { name: "AEROPUERTO ALBERTO CARNEVALLI - MERIDA" },
-    // { name: "AEROPUERTO CACIQUE ARAMARE" },
-    // { name: "AEROPUERTO DE HIGUEROTE" },
-    // { name: "AEROPUERTO INTERNACIONAL ARTURO MICHELENA" },
-    // { name: "AEROPUERTO INTERNACIONAL BARTOLOME SALOM" },
-    // { name: "AEROPUERTO INTERNACIONAL DE SANTA ELENA DE UAIREN" },
-    // {
-    //   name: "AEROPUERTO INTERNACIONAL G/D JOSE ANTONIO ANZOATEGUI",
-    // },
-    // {
-    //   name:
-    //     "AEROPUERTO INTERNACIONAL GRAL. JUAN VICENTE GOMEZ-SAN ANTONIO DEL TACHIRA",
-    // },
-    // { name: "AEROPUERTO INTERNACIONAL JACINTO LARA" },
-    // { name: "AEROPUERTO INTERNACIONAL JOSE TADEO MONAGAS" },
-    // { name: "AEROPUERTO INTERNACIONAL JUAN PABLO PEREZ ALFONZO" },
-    // { name: "AEROPUERTO INTERNACIONAL LA CHINITA" },
-    // { name: "AEROPUERTO INTERNCIONAL G/J SANTIAGO MARIÑO" },
-    // { name: "AEROPUERTO JUAN PABLO PEREZ ALFONZO - EL VIGIA" },
-    // { name: "AEROPUERTO MAYOR BUENAVENTURA VIVAS GUERRERO" },
-    // { name: "AEROPUERTO METROPOLITANO DE OCUMARE DEL TUY" },
-    // { name: "AEROPUERTO NACIONAL ALBERTO CARNEVALLI" },
-    // { name: "AEROPUERTO NACIONAL DE ANACO" },
-    // { name: "AEROPUERTO NACIONAL DE CALABOZO" },
-    // { name: "AEROPUERTO NACIONAL DE PARAMILLO" },
-    // { name: "AEROPUERTO NACIONAL DON EDMUNDO BARRIOS" },
-    // { name: "AEROPUERTO NACIONAL FRANCISCO GARCIA DE HEVIA" },
-    // { name: "AEROPUERTO NACIONAL GUASIPATI" },
-    // { name: "AEROPUERTO NACIONAL LA PARAGUA" },
-    // { name: "AEROPUERTO NACIONAL LUEPA" },
-    // { name: "AEROPUERTO NACIONAL TUMEREMO" },
-    // { name: "AEROPUERTO NESTOR ARIAS" },
-    // { name: "AEROPUERTO OSCAR MACHADO ZULOAGA" },
-    // { name: "JUBILADOS AEROPUERTO INTERNACIONAL JACINTO LARA" },
-    // { name: "JUBILADOS AEROPUERTO NACIONAL JUAN VICENTE GOMEZ" },
-    // { name: "PENSIONADOS Y JUBILADOS SANTIAGO MARIÑO" },
-    // {
-    //   name:
-    //     "PERSONAL PENSIONADO Y JUBILADO DEL AEROPUERTO JOSE ANTONIO DE ANZOATEGUI",
-    // },
+    { name: "AEROPUERTO ALBERTO CARNEVALLI - MERIDA" },
+    { name: "AEROPUERTO CACIQUE ARAMARE" },
+    { name: "AEROPUERTO DE HIGUEROTE" },
+    { name: "AEROPUERTO INTERNACIONAL ARTURO MICHELENA" },
+    { name: "AEROPUERTO INTERNACIONAL BARTOLOME SALOM" },
+    { name: "AEROPUERTO INTERNACIONAL DE SANTA ELENA DE UAIREN" },
+    {
+      name: "AEROPUERTO INTERNACIONAL G/D JOSE ANTONIO ANZOATEGUI",
+    },
+    {
+      name:
+        "AEROPUERTO INTERNACIONAL GRAL. JUAN VICENTE GOMEZ-SAN ANTONIO DEL TACHIRA",
+    },
+    { name: "AEROPUERTO INTERNACIONAL JACINTO LARA" },
+    { name: "AEROPUERTO INTERNACIONAL JOSE TADEO MONAGAS" },
+    { name: "AEROPUERTO INTERNACIONAL JUAN PABLO PEREZ ALFONZO" },
+    { name: "AEROPUERTO INTERNACIONAL LA CHINITA" },
+    { name: "AEROPUERTO INTERNCIONAL G/J SANTIAGO MARIÑO" },
+    { name: "AEROPUERTO JUAN PABLO PEREZ ALFONZO - EL VIGIA" },
+    { name: "AEROPUERTO MAYOR BUENAVENTURA VIVAS GUERRERO" },
+    { name: "AEROPUERTO METROPOLITANO DE OCUMARE DEL TUY" },
+    { name: "AEROPUERTO NACIONAL ALBERTO CARNEVALLI" },
+    { name: "AEROPUERTO NACIONAL DE ANACO" },
+    { name: "AEROPUERTO NACIONAL DE CALABOZO" },
+    { name: "AEROPUERTO NACIONAL DE PARAMILLO" },
+    { name: "AEROPUERTO NACIONAL DON EDMUNDO BARRIOS" },
+    { name: "AEROPUERTO NACIONAL FRANCISCO GARCIA DE HEVIA" },
+    { name: "AEROPUERTO NACIONAL GUASIPATI" },
+    { name: "AEROPUERTO NACIONAL LA PARAGUA" },
+    { name: "AEROPUERTO NACIONAL LUEPA" },
+    { name: "AEROPUERTO NACIONAL TUMEREMO" },
+    { name: "AEROPUERTO NESTOR ARIAS" },
+    { name: "AEROPUERTO OSCAR MACHADO ZULOAGA" },
+    { name: "JUBILADOS AEROPUERTO INTERNACIONAL JACINTO LARA" },
+    { name: "JUBILADOS AEROPUERTO NACIONAL JUAN VICENTE GOMEZ" },
+    { name: "PENSIONADOS Y JUBILADOS SANTIAGO MARIÑO" },
+    {
+      name:
+        "PERSONAL PENSIONADO Y JUBILADO DEL AEROPUERTO JOSE ANTONIO DE ANZOATEGUI",
+    },
     { name: "BAER SEDE CENTRAL" },
   ];
 
@@ -174,7 +171,7 @@ mongoose
   .then(async () => {
     console.log("Database is connected");
     saveUsers();
-    // await saveAdmin();
+    await saveAdmin();
     await saveAirports();
     console.log("Data created successfully");
     process.exit();
