@@ -1,9 +1,9 @@
 <%- layout("layouts/main.ejs") %>
 
 <script>
-  const surveys = `<%- JSON.stringify(surveys) %>`;
-  const bannerBase64 = "<%= bannerBase64 %>";
-  const logoBase64 = "<%= logoBase64 %>";
+  const surveys = '<%- JSON.stringify(surveys) %>'.replace(/(\r\n|\n|\r)/gm, " ");
+  const bannerBase64 = '<%= bannerBase64 %>';
+  const logoBase64 = '<%= logoBase64 %>';
 
   const generatePDF = (doc, survey, callback) => {
     // Banner - Logo
@@ -56,9 +56,9 @@
       body: [
         [
           `Bolsa de comida: ${survey.benefits.foodBag ? "Si" : "No"} ${
-            survey.benefits.foodBag
-              ? ` - ${survey.benefits.foodBagFrequency}`
-              : ""
+          survey.benefits.foodBag
+            ? ` - ${survey.benefits.foodBagFrequency}`
+            : ""
           }`,
         ],
         [`Bonificaciones: ${survey.benefits.bonuses ? "Si" : "No"}`],
