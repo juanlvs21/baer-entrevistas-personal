@@ -1,9 +1,9 @@
 <%- layout("layouts/main.ejs") %>
 
 <script>
+  const surveys = `<%- JSON.stringify(surveys) %>`;
   const bannerBase64 = "<%= bannerBase64 %>";
   const logoBase64 = "<%= logoBase64 %>";
-  const surveys = `<%- JSON.stringify(surveys) %>`;
 
   const generatePDF = (doc, survey, callback) => {
     const bannerBase64 = "<%= bannerBase64 %>";
