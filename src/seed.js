@@ -149,6 +149,7 @@ async function saveAirports() {
     { name: "AEROPUERTO NACIONAL TUMEREMO" },
     { name: "AEROPUERTO NESTOR ARIAS" },
     { name: "AEROPUERTO OSCAR MACHADO ZULOAGA" },
+    { name: "BAER SEDE CENTRAL" },
     { name: "JUBILADOS AEROPUERTO INTERNACIONAL JACINTO LARA" },
     { name: "JUBILADOS AEROPUERTO NACIONAL JUAN VICENTE GOMEZ" },
     { name: "PENSIONADOS Y JUBILADOS SANTIAGO MARIÑO" },
@@ -156,7 +157,6 @@ async function saveAirports() {
       name:
         "PERSONAL PENSIONADO Y JUBILADO DEL AEROPUERTO JOSE ANTONIO DE ANZOATEGUI",
     },
-    { name: "BAER SEDE CENTRAL" },
   ];
 
   await Airport.insertMany(airports);

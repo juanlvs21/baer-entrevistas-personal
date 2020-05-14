@@ -78,8 +78,6 @@
       </div>
     </nav>
 
-    <%- body %>
-
     <div class="notification is-danger baer__error-logout" id="errorLogout">
       <p><b>No se ha podido cerrar la sesión</b></p>
     </div>
@@ -116,5 +114,7 @@
           .finally(() => btnLogout.classList.remove("is-loading"));
       };
     </script>
+
+    <%- body %>
   </body>
 </html>
