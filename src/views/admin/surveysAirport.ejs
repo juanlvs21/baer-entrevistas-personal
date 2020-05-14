@@ -1,5 +1,63 @@
 <%- layout("layouts/main.ejs") %>
+<div class="card baer__survey-card">
+  <div class="has-text-centered" style="padding-top: 10px;">
+    <img src="/static/images/banner.png" alt="BAER Banner" height="70" />
+  </div>
+  <header class="baer__card-header">
+    <h1><%= airport %></h1>
+  </header>
+  <div class="card-content">
+    <div class="content">
+      <div class="baer__table-container">
+        <table class="table is-hoverable" id="table-surveys">
+          <thead>
+            <tr>
+              <th>CI</th>
+              <th>Nombre y Apellido</th>
+              <th>Fecha de Realizacion</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% surveys.forEach(function(survey) { %>
+            <tr>
+              <td><%= survey.ci_user %></td>
+              <td>
+                <%= survey.firstName_user %> <%= survey.lastName_user %>
+              </td>
+              <td><%= moment(survey.date).format("DD/MM/YYYY hh:ss") %></td>
+              <td>
+                <button
+                  class="button is-small is-info is-outlined"
+                  onclick="downloadPDF('<%= JSON.stringify(survey) %>')"
+                >
+                  Descargar
+                </button>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+      <div class="has-text-centered">
+        <button class="button is-info" onclick="downloadAllPDF()">
+          Descargar Todo
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+  const bannerBase64 = "<%= bannerBase64 %>";
+  const logoBase64 = "<%= logoBase64 %>";
+  const surveys = `<%- JSON.stringify(surveys) %>`;
+
+  (() => {
+    const tableSurveys = document.querySelector("#table-surveys");
+    const dataTable = new DataTable(tableSurveys);
+  })();
+
   const generatePDF = (doc, survey, callback) => {
     const bannerBase64 = "<%= bannerBase64 %>";
     const logoBase64 = "<%= logoBase64 %>";
@@ -85,12 +143,12 @@
     generatePDF(doc, survey, (doc, name) => doc.save(name));
   };
 
-  const downloadAllPDF = (surveysString) => {
+  const downloadAllPDF = () => {
     const doc = new jsPDF("p", "pt", "a4");
     const airport = "<%= airport %>";
-    const surveys = JSON.parse(surveysString);
+    const surveysParse = JSON.parse(surveys);
 
-    surveys.map((survey, i) => {
+    surveysParse.map((survey, i) => {
       generatePDF(doc, survey, (doc, name) => {
         if (i < surveys.length - 1) doc.addPage();
       });
@@ -98,63 +156,4 @@
 
     doc.save(`${airport}.pdf`);
   };
-</script>
-
-<div class="card baer__survey-card">
-  <div class="has-text-centered" style="padding-top: 10px;">
-    <img src="/static/images/banner.png" alt="BAER Banner" height="70" />
-  </div>
-  <header class="baer__card-header">
-    <h1><%= airport %></h1>
-  </header>
-  <div class="card-content">
-    <div class="content">
-      <div class="baer__table-container">
-        <table class="table is-hoverable" id="table-surveys">
-          <thead>
-            <tr>
-              <th>CI</th>
-              <th>Nombre y Apellido</th>
-              <th>Fecha de Realizacion</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% surveys.forEach(function(survey) { %>
-            <tr>
-              <td><%= survey.ci_user %></td>
-              <td>
-                <%= survey.firstName_user %> <%= survey.lastName_user %>
-              </td>
-              <td><%= moment(survey.date).format("DD/MM/YYYY hh:ss") %></td>
-              <td>
-                <button
-                  class="button is-small is-info is-outlined"
-                  onclick="downloadPDF('<%= JSON.stringify(survey) %>')"
-                >
-                  Descargar
-                </button>
-              </td>
-            </tr>
-            <% }); %>
-          </tbody>
-        </table>
-      </div>
-      <div class="has-text-centered">
-        <button
-          class="button is-info"
-          onclick="downloadAllPDF('<%= JSON.stringify(surveys) %>')"
-        >
-          Descargar Todo
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-  (() => {
-    const tableSurveys = document.querySelector("#table-surveys");
-    const dataTable = new DataTable(tableSurveys);
-  })();
 </script>
