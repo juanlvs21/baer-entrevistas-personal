@@ -45,7 +45,8 @@ controller.surveyAirport = async (req, res, next) => {
 
   res.render("admin/surveysAirport", {
     user: req.user,
-    airport: airport.name,
+    airportName: airport.name,
+    airportId: airport._id,
     surveys,
     moment,
     bannerBase64,

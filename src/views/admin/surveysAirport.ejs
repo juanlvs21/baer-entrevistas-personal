@@ -1,7 +1,6 @@
 <%- layout("layouts/main.ejs") %>
 
 <script>
-  const surveys = '<%- JSON.stringify(surveys) %>'.replace(/(\r\n|\n|\r)/gm, " ");
   const bannerBase64 = '<%= bannerBase64 %>';
   const logoBase64 = '<%= logoBase64 %>';
 
@@ -91,17 +90,39 @@
   };
 
   const downloadAllPDF = () => {
-    const doc = new jsPDF("p", "pt", "a4");
-    const airport = "<%= airport %>";
-    const surveysParse = JSON.parse(surveys);
+    const airportId = "<%= airportId %>";
+    const airportName = "<%= airportName %>";
 
-    surveysParse.map((survey, i) => {
-      generatePDF(doc, survey, (doc, name) => {
-        if (i < surveys.length - 1) doc.addPage();
-      });
-    });
+    const btn = document.getElementById("download-all-pdf")
+    if (btn.classList.contains("is-loading")) btn.classList.remove("is-loading");
+    btn.classList.add("is-loading")
+    btn.disabled = true
 
-    doc.save(`${airport}.pdf`);
+    const error = document.getElementById("error-download")
+    if (error.classList.contains("show")) error.classList.remove("show");
+
+    fetch(`/api/v1/surveys/${airportId}`)
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function ({ data }) {
+        const doc = new jsPDF("p", "pt", "a4");
+
+        data.map((survey, i) => {
+          generatePDF(doc, survey, (doc, name) => {
+            if (i < survey.length - 1) doc.addPage();
+          });
+        });
+
+        doc.save(`${airportName}.pdf`);
+      })
+      .catch(() => {
+        error.classList.add("show");
+      })
+      .finally(() => {
+        btn.classList.remove("is-loading")
+        btn.disabled = false
+      })
   };
 </script>
 
@@ -110,7 +131,7 @@
     <img src="/static/images/banner.png" alt="BAER Banner" height="70" />
   </div>
   <header class="baer__card-header">
-    <h1><%= airport %></h1>
+    <h1><%= airportName %></h1>
   </header>
   <div class="card-content">
     <div class="content">
@@ -144,9 +165,12 @@
         </table>
       </div>
       <div class="has-text-centered">
-        <button class="button is-info" onclick="downloadAllPDF()">
+        <button class="button is-info" onclick="downloadAllPDF()" id="download-all-pdf">
           Descargar Todo
         </button>
+        <div class="notification is-danger baer__error-download" id="error-download">
+          Ha ocorrido un error al generar el reporte
+        </div>
       </div>
     </div>
   </div>

@@ -1,7 +1,6 @@
 <%- layout("layouts/main.ejs") %>
 
 <script>
-  const surveys = '<%- JSON.stringify(surveys) %>'.replace(/(\r\n|\n|\r)/gm, " ");
   const bannerBase64 = '<%= bannerBase64 %>';
   const logoBase64 = '<%= logoBase64 %>';
 
@@ -80,17 +79,38 @@
     callback(doc, `${survey.ci_user}.pdf`);
     // doc.save(`${survey.ci_user}.pdf`);
   };
+
   const downloadAllGlobalPDF = () => {
-    const doc = new jsPDF("p", "pt", "a4");
-    const stringParse = JSON.parse(surveys);
+    const btn = document.getElementById("download-all-pdf")
+    if (btn.classList.contains("is-loading")) btn.classList.remove("is-loading");
+    btn.classList.add("is-loading")
+    btn.disabled = true
 
-    stringParse.map((survey, i) => {
-      generatePDF(doc, survey, (doc, name) => {
-        if (i < surveys.length - 1) doc.addPage();
-      });
-    });
+    const error = document.getElementById("error-download")
+    if (error.classList.contains("show")) error.classList.remove("show");
 
-    doc.save(`BAER - ENTREVISTAS PERSONAL DE SERVICIO.pdf`);
+    fetch(`/api/v1/surveys`)
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function ({ data }) {
+        const doc = new jsPDF("p", "pt", "a4");
+
+        data.map((survey, i) => {
+          generatePDF(doc, survey, (doc, name) => {
+            if (i < survey.length - 1) doc.addPage();
+          });
+        });
+
+        doc.save(`BAER - ENTREVISTAS PERSONAL DE SERVICIO.pdf`);
+      })
+      .catch(() => {
+        error.classList.add("show");
+      })
+      .finally(() => {
+        btn.classList.remove("is-loading")
+        btn.disabled = false
+      })
   };
 </script>
 
@@ -130,9 +150,12 @@
         </table>
       </div>
       <div class="has-text-centered">
-        <button class="button is-info" onclick="downloadAllGlobalPDF()">
+        <button class="button is-info" onclick="downloadAllGlobalPDF()" id="download-all-pdf">
           Descargar todas las entrevistas
         </button>
+        <div class="notification is-danger baer__error-download" id="error-download">
+          Ha ocorrido un error al generar el reporte
+        </div>
       </div>
     </div>
   </div>

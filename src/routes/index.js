@@ -6,6 +6,7 @@ const app = require("../controllers/app");
 const auth = require("../controllers/auth");
 const survey = require("../controllers/survey");
 const administrador = require("../controllers/admin");
+const api = require("../controllers/api");
 
 // Middlewares
 const isAuthenticated = require("../middlewares/isAuthenticated");
@@ -28,6 +29,10 @@ router.get(
   isAdmin,
   administrador.surveyAirport
 );
+
+// API
+router.get("/api/v1/surveys/:id", api.getSuvery);
+router.get("/api/v1/surveys", api.getAllSuvery);
 
 // 404
 router.get("*", app.notFound);

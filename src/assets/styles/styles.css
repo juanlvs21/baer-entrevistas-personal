@@ -122,6 +122,19 @@ body {
   font-weight: bold;
 }
 
+/* Error download */
+.baer__error-download {
+  width: 50%;
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  display: none;
+}
+
+.baer__error-download.show {
+  display: block;
+}
+
 /* Responsive */
 @media (max-width: 1023px) {
   .navbar-menu {
@@ -131,5 +144,15 @@ body {
   #btnLogout {
     color: #3298dc;
     border-color: #3298dc;
+  }
+}
+@media (max-width: 991px) {
+  .baer__error-download {
+    width: 70%;
+  }
+}
+@media (max-width: 700px) {
+  .baer__error-download {
+    width: 90%;
   }
 }
