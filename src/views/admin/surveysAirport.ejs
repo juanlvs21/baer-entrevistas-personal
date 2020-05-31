@@ -1,12 +1,12 @@
 <%- layout("layouts/main.ejs") %>
 
 <script>
-  const bannerBase64 = '<%= bannerBase64 %>';
-  const logoBase64 = '<%= logoBase64 %>';
+  const bannerBase64 = "<%= bannerBase64 %>";
+  const logoBase64 = "<%= logoBase64 %>";
 
   const generatePDF = (doc, survey, callback) => {
-    const bannerBase64 = '<%= bannerBase64 %>';
-    const logoBase64 = '<%= logoBase64 %>';
+    const bannerBase64 = "<%= bannerBase64 %>";
+    const logoBase64 = "<%= logoBase64 %>";
 
     // Banner - Logo
     doc.addImage(bannerBase64, "PNG", 40, 30, 500, 40);
@@ -58,9 +58,9 @@
       body: [
         [
           `Bolsa de comida: ${survey.benefits.foodBag ? "Si" : "No"} ${
-          survey.benefits.foodBag
-            ? ` - ${survey.benefits.foodBagFrequency}`
-            : ""
+            survey.benefits.foodBag
+              ? ` - ${survey.benefits.foodBagFrequency}`
+              : ""
           }`,
         ],
         [`Bonificaciones: ${survey.benefits.bonuses ? "Si" : "No"}`],
@@ -80,28 +80,51 @@
     });
 
     callback(doc, `${survey.ci_user}.pdf`);
-    // doc.save(`${survey.ci_user}.pdf`);
   };
 
-  const downloadPDF = (surveyString) => {
-    const doc = new jsPDF("p", "pt", "a4");
-    const survey = JSON.parse(surveyString);
-    generatePDF(doc, survey, (doc, name) => doc.save(name));
+  const downloadPDF = (surveyId) => {
+    const btn = document.getElementById(`download-${surveyId}`);
+
+    if (btn.classList.contains("is-loading"))
+      btn.classList.remove("is-loading");
+    btn.classList.add("is-loading");
+    btn.disabled = true;
+
+    const error = document.getElementById("error-download-details");
+    if (error.classList.contains("show")) error.classList.remove("show");
+
+    fetch(`/api/v1/surveys/details/${surveyId}`)
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function ({ data }) {
+        const doc = new jsPDF("p", "pt", "a4");
+        generatePDF(doc, data, (doc, name) => doc.save(name));
+      })
+      .catch(() => {
+        error.classList.add("show");
+        setTimeout(() => error.classList.remove("show"), 3000);
+      })
+      .finally(() => {
+        btn.classList.remove("is-loading");
+        btn.disabled = false;
+      });
   };
 
   const downloadAllPDF = () => {
     const airportId = "<%= airportId %>";
     const airportName = "<%= airportName %>";
 
-    const btn = document.getElementById("download-all-pdf")
-    if (btn.classList.contains("is-loading")) btn.classList.remove("is-loading");
-    btn.classList.add("is-loading")
-    btn.disabled = true
+    const btn = document.getElementById("download-all-pdf");
+    if (btn.classList.contains("is-loading"))
+      btn.classList.remove("is-loading");
+    btn.classList.add("is-loading");
+    btn.disabled = true;
 
-    const error = document.getElementById("error-download")
+    const error = document.getElementById("error-download");
     if (error.classList.contains("show")) error.classList.remove("show");
 
-    fetch(`/api/v1/surveys/${airportId}`)
+    fetch(`/api/v1/surveys/airport/${airportId}`)
       .then(function (response) {
         return response.json();
       })
@@ -120,9 +143,9 @@
         error.classList.add("show");
       })
       .finally(() => {
-        btn.classList.remove("is-loading")
-        btn.disabled = false
-      })
+        btn.classList.remove("is-loading");
+        btn.disabled = false;
+      });
   };
 </script>
 
@@ -154,8 +177,11 @@
               </td>
               <td><%= moment(survey.date).format("DD/MM/YYYY hh:ss") %></td>
               <td>
-                <button class="button is-small is-info is-outlined"
-                  onclick="downloadPDF('<%= JSON.stringify(survey) %>')">
+                <button
+                  class="button is-small is-info is-outlined"
+                  id="download-<%= survey._id %>"
+                  onclick="downloadPDF('<%= survey._id %>')"
+                >
                   Descargar
                 </button>
               </td>
@@ -165,10 +191,17 @@
         </table>
       </div>
       <div class="has-text-centered">
-        <button class="button is-info" onclick="downloadAllPDF()" id="download-all-pdf">
+        <button
+          class="button is-info"
+          onclick="downloadAllPDF()"
+          id="download-all-pdf"
+        >
           Descargar Todo
         </button>
-        <div class="notification is-danger baer__error-download" id="error-download">
+        <div
+          class="notification is-danger baer__error-download"
+          id="error-download"
+        >
           Ha ocorrido un error al generar el reporte
         </div>
       </div>
@@ -176,6 +209,11 @@
   </div>
 </div>
 
+<div class="baer__error-download-details" id="error-download-details">
+  <div class="notification is-danger">
+    Ha ocorrido un error al generar el reporte
+  </div>
+</div>
 <script>
   (() => {
     const tableSurveys = document.querySelector("#table-surveys");

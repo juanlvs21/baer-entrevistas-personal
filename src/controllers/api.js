@@ -4,7 +4,28 @@ const Airport = require("../models/airport");
 
 const controller = {};
 
-controller.getSuvery = async (req, res, next) => {
+controller.getAllSuvery = async (req, res, next) => {
+  try {
+    const surveys = await Survey.find().sort({ airport: 1 });
+
+    if (surveys.length) {
+      res.status(200).json({
+        data: surveys,
+      });
+    } else {
+      res.status(404).json({
+        data: " Error al generar reporte",
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      data: "Error interno del servidor",
+    });
+  }
+};
+
+controller.getSuveryAirport = async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -28,17 +49,19 @@ controller.getSuvery = async (req, res, next) => {
   }
 };
 
-controller.getAllSuvery = async (req, res, next) => {
+controller.getDetailSuvery = async (req, res, next) => {
   try {
-    const surveys = await Survey.find().sort({ airport: 1 });
+    const { id } = req.params;
 
-    if (surveys.length) {
+    const surveys = await Survey.findOne({ _id: id });
+
+    if (surveys) {
       res.status(200).json({
         data: surveys,
       });
     } else {
       res.status(404).json({
-        data: " Error al generar reporte",
+        data: "Encuesta no encontrada",
       });
     }
   } catch (err) {

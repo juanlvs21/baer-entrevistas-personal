@@ -31,8 +31,9 @@ router.get(
 );
 
 // API
-router.get("/api/v1/surveys/:id", api.getSuvery);
+router.get("/api/v1/surveys/airport/:id", api.getSuveryAirport);
 router.get("/api/v1/surveys", api.getAllSuvery);
+router.get("/api/v1/surveys/details/:id", api.getDetailSuvery);
 
 // 404
 router.get("*", app.notFound);

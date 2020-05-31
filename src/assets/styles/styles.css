@@ -135,6 +135,19 @@ body {
   display: block;
 }
 
+.baer__error-download-details {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  margin-top: 10px;
+  margin-left: 10px;
+  display: none;
+}
+
+.baer__error-download-details.show {
+  display: block;
+}
+
 /* Responsive */
 @media (max-width: 1023px) {
   .navbar-menu {
