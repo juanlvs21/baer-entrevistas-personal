@@ -110,7 +110,7 @@
 
         data.map((survey, i) => {
           generatePDF(doc, survey, (doc, name) => {
-            if (i < survey.length - 1) doc.addPage();
+            if (i < data.length - 1) doc.addPage();
           });
         });
 
